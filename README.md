@@ -10,6 +10,7 @@ A browser-only, brand-independent acrylic paint mixing prototype.
 - Deterministic recipes using up to three or four paints
 - Reported reference recipes for six landscape presets, shown separately from model estimates and surfaced for nearby sampled colors
 - Locally saved personal reference anchors for recipes confirmed against dried swatches
+- Browser-only export/import for moving saved recipes and personal anchors between devices
 - Predicted color comparison, clipboard copying, and local recipe history
 
 ## Run locally
@@ -38,7 +39,7 @@ The six landscape presets also include reported reference recipes from a supplie
 
 ## Privacy
 
-Images are processed entirely in the browser and are not uploaded. Saved recipes use this browser's localStorage; they do not sync between devices or domains.
+Images are processed entirely in the browser and are not uploaded. Saved recipes and personal anchors use this browser's localStorage; they do not sync automatically between devices or domains. Use the local data export/import controls to move a JSON backup manually.
 
 ## Source
 
