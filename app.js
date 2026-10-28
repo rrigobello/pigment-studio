@@ -1,6 +1,14 @@
 const $=id=>document.getElementById(id);
 const paints=[['Titanium White','#f5f3e9'],['Yellow Ochre','#bc8b32'],['Burnt Sienna','#934c32'],['Raw Umber','#66523b'],['Burnt Umber','#49372a'],['Ultramarine Blue','#293b80'],['Mars Black','#242424'],['Primary Yellow','#f1d329'],['Primary Red','#bb3046'],['Phthalo Blue','#12516f'],['Phthalo Green','#176052'],['Quinacridone Magenta','#96345f']];
 const sets={earth:[0,1,2,3,4,5,6],basic:[0,1,2,5,6,7,8,9],expanded:paints.map((_,i)=>i)};
+const referenceRecipes={
+  '#C48B6C':{label:'Main dry ground',lines:['4 Yellow Ochre','2 Burnt Sienna','2 Titanium White','tiny Raw Umber']},
+  '#B9745F':{label:'Redder earth / shadows',lines:['3 Burnt Sienna','2 Yellow Ochre','1 Titanium White','tiny Ultramarine Blue']},
+  '#C89D7F':{label:'Light dry ground',lines:['3 Yellow Ochre','1 Burnt Sienna','3 Titanium White']},
+  '#686E5B':{label:'Main grass / shrubs',lines:['2 Yellow Ochre','1 Ultramarine Blue','1 Raw Umber','a little Titanium White']},
+  '#7F846E':{label:'Lighter vegetation',lines:['Same mix as gray olive','more Titanium White / Yellow Ochre']},
+  '#464D3F':{label:'Dark foliage',lines:['2 Ultramarine Blue','2 Yellow Ochre','1 Burnt Umber']}
+};
 function rgb(hex){return hex.match(/[a-f\d]{2}/gi).map(v=>parseInt(v,16)/255)}
 function linear(v){return v<=.04045?v/12.92:((v+.055)/1.055)**2.4}
 function gamma(v){return v<=.0031308?12.92*v:1.055*v**(1/2.4)-.055}
@@ -13,6 +21,9 @@ function renderPalette(){$('paints').replaceChildren(...sets[$('palette').value]
 function solve(){const target=$('color').value, ids=sets[$('palette').value], max=+$('limit').value,t=lab(rgb(target).map(linear));let best=Infinity,winner;
 function visit(start,left,entries,k){if(entries.length && left===0){let a=reflect(k),l=lab(a),d=l.reduce((s,v,i)=>s+(v-t[i])**2,0);if(d<best-1e-14){best=d;winner={entries:entries.map(x=>[...x]),a}}return}if(entries.length>=max)return;for(let j=start;j<ids.length;j++){let i=ids[j];for(let n=1;n<=left;n++)visit(j+1,left-n,[...entries,[i,n]],k.map((v,c)=>v+ks[i][c]*n/20))}}
 visit(0,20,[],[0,0,0]);current={target,palette:$('palette').selectedOptions[0].text,estimated:hex(winner.a),entries:winner.entries};$('target').style.background=target;$('prediction').style.background=current.estimated;$('targethex').textContent=target.toUpperCase();$('predhex').textContent=current.estimated;$('recipe').innerHTML=winner.entries.sort((a,b)=>b[1]-a[1]||a[0]-b[0]).map(([i,n])=>'<div class="row"><i class="dot" style="background:'+paints[i][1]+'"></i><div>'+paints[i][0]+'<div class="bar"><div class="fill" style="width:'+n*5+'%"></div></div></div><b>'+n*5+'%</b></div>').join('');$('quality').textContent=(Math.sqrt(best)<.025?'Close within this model.':Math.sqrt(best)<.06?'Approximate within this model.':'Limited match with this palette. Try the expanded palette.')+' Generic pigments are uncalibrated—test a small swatch before mixing a batch.';$('status').textContent=''}
+function renderReference(target){let panel=$('reference');if(!panel){panel=document.createElement('div');panel.id='reference';panel.className='notice';panel.style.marginTop='20px';$('quality').after(panel)}let reference=referenceRecipes[target.toUpperCase()];if(!reference){panel.hidden=true;panel.replaceChildren();return}panel.hidden=false;let title=document.createElement('strong');title.textContent='Reported starting recipe · '+reference.label;let note=document.createElement('p');note.textContent='From the supplied illustration comparison. Parts are approximate; “tiny” and “a little” are intentionally not exact weights.';let lines=document.createElement('p');lines.style.whiteSpace='pre-line';lines.textContent=reference.lines.join('\n');panel.replaceChildren(title,note,lines)}
+const solveModel=solve;
+solve=()=>{solveModel();current.reference=referenceRecipes[current.target.toUpperCase()]||null;renderReference(current.target)};
 function setColor(v){$('color').value=v;$('hex').value=v.toUpperCase();solve()}
 const names=['Dusty terracotta','Muted clay','Sandy ochre','Gray olive','Sage olive','Dark olive'];['#c48b6c','#b9745f','#c89d7f','#686e5b','#7f846e','#464d3f'].forEach((v,i)=>{let b=document.createElement('button');b.style.background=v;b.title=names[i];b.setAttribute('aria-label',names[i]);b.onclick=()=>setColor(v);$('presets').append(b)});
 $('color').oninput=()=>setColor($('color').value);$('hex').onchange=()=>{let v=$('hex').value.trim();if(!v.startsWith('#'))v='#'+v;if(/^#[a-f\d]{6}$/i.test(v))setColor(v);else{$('status').textContent='Enter a six-digit HEX color, such as #C48B6C.';$('hex').value=$('color').value.toUpperCase()}};$('palette').onchange=()=>{renderPalette();solve()};$('limit').onchange=solve;$('mix').onclick=solve;
@@ -20,6 +31,8 @@ $('file').onchange=()=>{let file=$('file').files[0];if(!file)return;let url=URL.
 function sampleImage(e){let c=$('canvas'),r=c.getBoundingClientRect(),x=Math.max(0,Math.min(c.width-1,Math.floor((e.clientX-r.left)*c.width/r.width))),y=Math.max(0,Math.min(c.height-1,Math.floor((e.clientY-r.top)*c.height/r.height))),a=c.getContext('2d').getImageData(x,y,1,1).data,sampled='#'+[...a].slice(0,3).map(v=>v.toString(16).padStart(2,'0')).join('');setColor(sampled);$('imageHint').textContent='Sampled '+sampled.toUpperCase()+'. Tap or click the image to sample another color.'}
 $('canvas').onclick=null;$('canvas').style.touchAction='manipulation';$('imageHint').textContent='Images stay in your browser. Tap or click the image to sample.';$('canvas').onpointerdown=e=>{e.preventDefault();sampleImage(e)};
 function recipeText(r){return 'Target '+r.target+' · estimated '+r.estimated+'\n'+r.entries.map(([i,n])=>paints[i][0]+': '+n*5+'%').join('\n')+'\nUncalibrated starting estimate. Make a dried test swatch.'}
+const recipeTextModel=recipeText;
+recipeText=r=>{let text=recipeTextModel(r);if(r.reference)text+='\nReported reference starting recipe · '+r.reference.label+'\n'+r.reference.lines.join('\n');return text}
 $('copy').onclick=async()=>{try{await navigator.clipboard.writeText(recipeText(current));$('status').textContent='Recipe copied.'}catch{$('status').textContent='Clipboard unavailable. You can select and copy the recipe above.'}};
 function saved(){try{return JSON.parse(localStorage.getItem('pigment-recipes')||'[]')}catch{return []}}
 function showSaved(){let el=$('saved');el.replaceChildren();saved().forEach(r=>{let p=document.createElement('p');p.style.whiteSpace='pre-line';p.textContent=recipeText(r);el.append(p)});if(!el.children.length)el.textContent='No saved recipes yet.'}

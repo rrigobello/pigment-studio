@@ -8,6 +8,7 @@ A browser-only, brand-independent acrylic paint mixing prototype.
 - HEX color input and six landscape presets
 - Local image upload with click-to-sample color picking
 - Deterministic recipes using up to three or four paints
+- Reported reference recipes for six landscape presets, shown separately from model estimates
 - Predicted color comparison, clipboard copying, and local recipe history
 
 ## Run locally
@@ -31,6 +32,8 @@ Generic paint colors are converted from sRGB to linear RGB, then into three-chan
 The search exhaustively checks a fixed 5% proportion grid with a stable paint order and deterministic tie handling. The same inputs and settings yield the same recipe.
 
 These generic swatches are **not calibrated against real acrylic paints**. The model does not account for measured spectra, tinting strength, brands, drying, film thickness, substrate, lighting, or metamerism. Model percentages are not validated weight or volume formulas. Treat recipes as starting estimates, use approximate equal-sized parts for a small test, and assess dried swatches under consistent lighting before mixing larger quantities.
+
+The six landscape presets also include reported reference recipes from a supplied image-color comparison. They are shown as separate practical starting points; entries described as “tiny” or “a little” are intentionally approximate and are not used as calibrated model data yet.
 
 ## Privacy
 
