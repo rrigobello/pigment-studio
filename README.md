@@ -11,7 +11,7 @@ A browser-only, brand-independent acrylic paint mixing prototype.
 - Reported reference recipes for six landscape presets, shown separately from model estimates and surfaced for nearby sampled colors
 - Locally saved personal reference anchors for recipes confirmed against dried swatches
 - Browser-only export/import for moving saved recipes and personal anchors between devices
-- Qualitative practical recipe families for earth, olive, neutral, red, blue, violet, and ochre targets
+- Qualitative practical recipe families with pigment guidance, proportion constraints, and dried-swatch adjustment advice
 - Predicted color comparison, clipboard copying, and local recipe history
 
 ## Run locally
@@ -36,7 +36,7 @@ The search exhaustively checks a fixed 5% proportion grid with a stable paint or
 
 These generic swatches are **not calibrated against real acrylic paints**. The model does not account for measured spectra, tinting strength, brands, drying, film thickness, substrate, lighting, or metamerism. Model percentages are not validated weight or volume formulas. Treat recipes as starting estimates, use approximate equal-sized parts for a small test, and assess dried swatches under consistent lighting before mixing larger quantities.
 
-The six landscape presets also include reported reference recipes from a supplied image-color comparison. They are shown as separate practical starting points; nearby sampled colors may surface the closest reported anchor, but entries described as “tiny” or “a little” are intentionally approximate and are not used as calibrated model data yet. For colors without a nearby reference, the app now shows a qualitative practical recipe family based on general pigment behavior—for example, Yellow Ochre + Ultramarine + Raw Umber for muted olives—alongside the mathematical model estimate. If you have a recipe confirmed against a dried swatch, the **Add a tested recipe** panel stores it locally as a personal reference anchor for future nearby samples. Personal anchors are empirical notes, not a recalibration of the model.
+The six landscape presets also include reported reference recipes from a supplied image-color comparison. They are shown as separate practical starting points; nearby sampled colors may surface the closest reported anchor, but entries described as “tiny” or “a little” are intentionally approximate and are not used as calibrated model data yet. For colors without a nearby reference, the app now shows a qualitative practical recipe family based on general pigment behavior—for example, Yellow Ochre + Ultramarine + Raw Umber for muted olives—alongside pigment-specific guidance, high-tinting-paint cautions, and dried-swatch adjustment advice. A small built-in sanity suite checks representative olive, blue, violet, earth, ochre, and vivid-green classifications. If you have a recipe confirmed against a dried swatch, the **Add a tested recipe** panel stores it locally as a personal reference anchor for future nearby samples. Personal anchors are empirical notes, not a recalibration of the model.
 
 ## Privacy
 
