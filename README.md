@@ -11,7 +11,7 @@ A browser-only, brand-independent acrylic paint mixing prototype.
 - Reported reference recipes for six landscape presets, shown separately from model estimates and surfaced for nearby sampled colors
 - Locally saved personal reference anchors for recipes confirmed against dried swatches
 - Browser-only export/import for moving saved recipes and personal anchors between devices
-- Qualitative practical recipe families with pigment guidance, proportion constraints, and dried-swatch adjustment advice
+- Qualitative practical recipe families with pigment guidance, relative-part bars, proportion constraints, and dried-swatch adjustment advice
 - Predicted color comparison, clipboard copying, and local recipe history
 
 ## Run locally
